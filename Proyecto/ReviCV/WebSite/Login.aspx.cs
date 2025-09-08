@@ -27,6 +27,7 @@ public partial class Login : System.Web.UI.Page
                         GestorIntegridad gestorIntegridad = new GestorIntegridad();
                         string bdErrores = gestorIntegridad.VerificarIntegridadTodasLasTablas();
                         Application["EstadoBD"] = bdErrores == "" ? true : false;
+                        Application["ErroresBD"] = "";
 
                         GuardarSession(u);
                         if (Application["EstadoBD"].Equals(true))
@@ -45,7 +46,7 @@ public partial class Login : System.Web.UI.Page
                             Application["ErroresBD"] = bdErrores;
                             if (Session["Rol"].Equals("Webmaster"))
                             {
-                                Response.Redirect("WebMaster_menu.aspx");
+                                Response.Redirect("Verificador.aspx");
                             }
                             else
                             {
