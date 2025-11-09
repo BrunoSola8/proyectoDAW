@@ -19,7 +19,7 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
 
                 cmd.Parameters.AddWithValue("@UsernameUsuario", cv.Usuario);
                 cmd.Parameters.AddWithValue("@Curriculum", cv.ArchivoCV);
@@ -29,7 +29,7 @@ namespace DAL
 
                 int id = (int)cmd.ExecuteScalar();
 
-                Conexion.Instancia.CerrarConexion();
+                
                 return id;
             }
         }
@@ -43,12 +43,12 @@ namespace DAL
 
             using (var conn = Conexion.Instancia.ReturnConexion())
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (var cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Rubro", NombreRubro);
                     int nuevoId = (int)cmd.ExecuteScalar();
-                    Conexion.Instancia.CerrarConexion();
+                    
                     return nuevoId;
                 }
             }
@@ -60,10 +60,10 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cmd.Parameters.AddWithValue("@Id", ID);
                 cmd.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
         public bool RubroEnUso(int idRubro)
@@ -73,9 +73,9 @@ namespace DAL
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
                 cmd.Parameters.AddWithValue("@Rubro", idRubro);
-                Conexion.Instancia.AbrirConexion();
+                
                 int cantidad = (int)cmd.ExecuteScalar();
-                Conexion.Instancia.CerrarConexion();
+                
 
                 return cantidad == 0;
             }
@@ -86,14 +86,14 @@ namespace DAL
 
             using (var conn = Conexion.Instancia.ReturnConexion())
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (var cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Rubro", nNombreRubro);
                     cmd.Parameters.AddWithValue("@Id", ID);
                     cmd.ExecuteNonQuery();
                 }
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
 
@@ -106,12 +106,12 @@ namespace DAL
 
             using (var conn = Conexion.Instancia.ReturnConexion())
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (var cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Idioma", NombreIdioma);
                     int nuevoId = (int)cmd.ExecuteScalar();
-                    Conexion.Instancia.CerrarConexion();
+                    
                     return nuevoId;
                 }
             }
@@ -123,10 +123,10 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cmd.Parameters.AddWithValue("@Id", ID);
                 cmd.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
         public bool IdiomaEnUso(int idIdioma)
@@ -136,9 +136,9 @@ namespace DAL
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
                 cmd.Parameters.AddWithValue("@Idioma", idIdioma);
-                Conexion.Instancia.AbrirConexion();
+                
                 int cantidad = (int)cmd.ExecuteScalar();
-                Conexion.Instancia.CerrarConexion();
+                
 
                 return cantidad == 0;
             }
@@ -149,14 +149,14 @@ namespace DAL
 
             using (var conn = Conexion.Instancia.ReturnConexion())
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (var cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Idioma", nNombreIdioma);
                     cmd.Parameters.AddWithValue("@Id", ID);
                     cmd.ExecuteNonQuery();
                 }
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
 
@@ -195,7 +195,7 @@ namespace DAL
                 using (SqlCommand cmd = new SqlCommand(finalQuery, conn))
                 {
                     cmd.Parameters.AddRange(parametros.ToArray());
-                    Conexion.Instancia.AbrirConexion();
+                    
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
@@ -213,7 +213,7 @@ namespace DAL
                         }
                     } // El SqlDataReader se cierra automáticamente aquí
 
-                    Conexion.Instancia.CerrarConexion();
+                    
                 }
             }
 
@@ -238,7 +238,7 @@ namespace DAL
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@ID", id);
-                    Conexion.Instancia.AbrirConexion();
+                    
 
                     byte[] archivoBytes = null;
                     int idCV = 0;
@@ -278,7 +278,7 @@ namespace DAL
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    Conexion.Instancia.AbrirConexion();
+                    
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -288,7 +288,7 @@ namespace DAL
                             idiomas.Add(id, nombre);
                         }
                     }
-                    Conexion.Instancia.CerrarConexion();
+                    
                 }
             }
 
@@ -304,7 +304,7 @@ namespace DAL
             {
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    Conexion.Instancia.AbrirConexion();
+                    
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -314,7 +314,7 @@ namespace DAL
                             rubros.Add(id, nombre);
                         }
                     }
-                    Conexion.Instancia.CerrarConexion();
+                    
                 }
             }
 
@@ -335,7 +335,7 @@ namespace DAL
             {
                 cmd.Parameters.AddWithValue("@UsernameUsuario", nombreUsuario);
 
-                Conexion.Instancia.AbrirConexion();
+                
 
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
@@ -369,7 +369,7 @@ namespace DAL
                     }
                 }
 
-                Conexion.Instancia.CerrarConexion();
+                
             }
 
             var idiomas = ObtenerIdiomas();
@@ -393,10 +393,10 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cmd.Parameters.AddWithValue("@Id", idCV);
                 cmd.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
 

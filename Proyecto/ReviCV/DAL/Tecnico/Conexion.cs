@@ -1,52 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL
 {
     public class Conexion
     {
-        private SqlConnection CO = null;
-        private readonly string connectionString = "Data Source=.;Initial Catalog=Proyecto_DAW;Integrated Security=True;";
+        private readonly string _connectionString =
+            "Data Source=.;Initial Catalog=Proyecto_DAW;Integrated Security=True;";
 
-        private static Conexion instancia;
-        public static Conexion Instancia
-        {
-            get
-            {
-                if (instancia == null) instancia = new Conexion();
-                return instancia;
-            }
-        }
-        public void AbrirConexion()
-        {
-            if(CO.State == System.Data.ConnectionState.Open)
-            {
-            }
-            else {
-                CO = new SqlConnection(connectionString);
-                CO.Open(); }
-        }
-        public void CerrarConexion()
-        {
-            CO.Close();
-        }
+        private static readonly Conexion instancia = new Conexion();
+        public static Conexion Instancia => instancia;
+
+        private Conexion() { }
+
         public SqlConnection ReturnConexion()
         {
-            if (CO == null)
-                CO = new SqlConnection(connectionString);
-
-            if (CO.State == System.Data.ConnectionState.Closed || CO.State == System.Data.ConnectionState.Broken)
-            {
-                CO.ConnectionString = connectionString;
-                CO.Open();
-            }
-
-            return CO;
+            var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            return connection;
         }
-
     }
 }
