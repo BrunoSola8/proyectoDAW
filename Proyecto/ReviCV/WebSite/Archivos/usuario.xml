@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Usuario xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DNI>94468458</DNI>
+  <Nombre>Lucas</Nombre>
+  <Apellido>Ostos</Apellido>
+  <NombreUsuario>WBA</NombreUsuario>
+  <Password />
+  <Email>lucas@gmail.com</Email>
+  <Rol>Administrador</Rol>
+</Usuario>

@@ -133,7 +133,7 @@ namespace DAL
                 {
                     if (DR.Read())
                     {
-                        U = new Usuario(int.Parse(DR[0].ToString()), DR[1].ToString(), DR[2].ToString(), DR[3].ToString(), "", DR[5].ToString(), DR[6].ToString());
+                        U = new Usuario(int.Parse(DR[0].ToString()), DR[1].ToString(), DR[2].ToString(), DR[3].ToString(), DR[4].ToString(), DR[5].ToString(), DR[6].ToString());
                     }
                 }
             }

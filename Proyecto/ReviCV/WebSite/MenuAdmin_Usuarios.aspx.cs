@@ -6,6 +6,7 @@ using ENTIDADES;
 using BLL;
 using System.Web.UI.WebControls;
 using SERVICIOS;
+using System.ServiceModel.Channels;
 
 
 public partial class MenuAdmin_Usuarios : Page
@@ -137,8 +138,6 @@ public partial class MenuAdmin_Usuarios : Page
             }            
         }
     }
-
-
     protected void btnEliminar_Click(object sender, EventArgs e)
     {
         if(txtDni.Text != "")
@@ -149,7 +148,15 @@ public partial class MenuAdmin_Usuarios : Page
             gestorBitacora.GuardarLogBitacora($"Se eliminó el usuario {txtDni.Text}", Session["username"].ToString());
             CargarUsuarios();
             LimpiarTxt();
+      
         }
+    }
+    protected void btnSerializar_Click(object sender, EventArgs e)
+    {
+        GestorUsuario gestorUsuario = new GestorUsuario();
+        Usuario usuarioSerializado = gestorUsuario.ObtenerUsuario(txtUsername.Text);
+        ServicioWeb sw = new ServicioWeb();
+        sw.SerializarUsuario(usuarioSerializado);
     }
     public void LimpiarTxt()
     {
@@ -224,4 +231,6 @@ public partial class MenuAdmin_Usuarios : Page
     {
         CancelarModificacion();
     }
+
+    
 }

@@ -290,6 +290,7 @@ h2, h3 {
                             <asp:Button ID="btnAgregar" runat="server" Text="Agregar" CssClass="boton boton-verde" OnClick="btnAgregar_Click" />
                             <asp:Button ID="btnModificar" runat="server" Text="Modificar" CssClass="boton boton-azul" OnClick="btnModificar_Click" />
                             <asp:Button ID="btnEliminar" runat="server" Text="Eliminar" CssClass="boton boton-rojo" OnClick="btnEliminar_Click" />
+                            <asp:Button ID="btnSerializar" runat="server" Text="Serializar" CssClass="boton boton-gris" OnClick="btnSerializar_Click" OnClientClick="return validarSeleccion();"/>
                             <asp:Button ID="btnCancelarEleccion" runat="server" Text="Cancelar" CssClass="boton boton-gris" OnClick="btnCancelarEleccion_Click" />
                         </div>
                     </div>
@@ -383,6 +384,16 @@ h2, h3 {
                 return area.value;
             }
         });
+    </script>
+    <script>
+        function validarSeleccion() {
+            var txt = document.getElementById('<%= txtUsername.ClientID %>');
+            if (!txt.value.trim()) {
+                alert('Debe seleccionar un usuario!');
+                return false; // evita el postback
+            }
+            return true; // continúa al servidor
+        }
     </script>
 </body>
 </html>
