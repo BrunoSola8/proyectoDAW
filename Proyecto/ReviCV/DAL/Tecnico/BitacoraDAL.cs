@@ -19,14 +19,14 @@ namespace DAL.Tecnico
 
             using (SqlCommand CM = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 CM.Parameters.AddWithValue("@Fecha", DateTime.Now);
                 CM.Parameters.AddWithValue("@Operacion", pOperacion);
                 CM.Parameters.AddWithValue("@Usuario", pUsuario);
 
                 int nuevoId = (int)CM.ExecuteScalar();
 
-                Conexion.Instancia.CerrarConexion();
+                
 
                 return nuevoId;
             }
@@ -40,7 +40,7 @@ namespace DAL.Tecnico
 
             using (SqlCommand CM = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (SqlDataReader DR = CM.ExecuteReader())
                 {
                     while (DR.Read())
@@ -86,7 +86,7 @@ namespace DAL.Tecnico
                 if (!string.IsNullOrEmpty(operacion))
                     cmd.Parameters.AddWithValue("@Operacion", "%" + operacion + "%");
 
-                Conexion.Instancia.AbrirConexion();
+                
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())

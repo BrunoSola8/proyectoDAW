@@ -50,6 +50,12 @@
     <Compile Include="GestorBitacora.cs" />
     <Compile Include="Encriptador.cs" />
     <Compile Include="GestorIntegridad.cs" />
+    <Compile Include="Permisos\GestorPermisos.cs" />
+    <Compile Include="Permisos\Permiso.cs" />
+    <Compile Include="Permisos\PermisoCompuesto.cs" />
+    <Compile Include="Permisos\PermisoDAO.cs" />
+    <Compile Include="Permisos\PermisoSimple.cs" />
+    <Compile Include="Permisos\TipoPermiso.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Traducciones\IObserver.cs" />
     <Compile Include="Traducciones\TraductorDAL.cs" />

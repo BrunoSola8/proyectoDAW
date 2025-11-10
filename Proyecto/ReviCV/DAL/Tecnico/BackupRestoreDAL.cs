@@ -27,9 +27,9 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(comandoBackup, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cmd.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
 
             return rutaCompleta;
@@ -37,7 +37,7 @@ namespace DAL
         public void RealizarRestore(string backupFilePath)
         {
 
-            Conexion.Instancia.AbrirConexion();
+            
 
             using (SqlCommand setMaster = new SqlCommand("USE master;", Conexion.Instancia.ReturnConexion()))
             {
@@ -60,7 +60,7 @@ namespace DAL
                 setMultiUser.ExecuteNonQuery();
             }
 
-            Conexion.Instancia.CerrarConexion();
+            
         }
     }
 }

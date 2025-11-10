@@ -17,9 +17,9 @@ namespace DAL
             {
                 CM.Parameters.AddWithValue("@DNI", pDNI);
                 CM.Parameters.AddWithValue("@username", username);
-                Conexion.Instancia.AbrirConexion();
+                
                 int cantidad = (int)CM.ExecuteScalar();
-                Conexion.Instancia.CerrarConexion();
+                
                 return cantidad > 0;
             }
         }
@@ -29,9 +29,9 @@ namespace DAL
             using (SqlCommand CM = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
                 CM.Parameters.AddWithValue("@username", username);
-                Conexion.Instancia.AbrirConexion();
+                
                 int cantidad = (int)CM.ExecuteScalar();
-                Conexion.Instancia.CerrarConexion();
+                
                 return cantidad > 0;
             }
         }
@@ -43,7 +43,7 @@ namespace DAL
             {
                 CM.Parameters.AddWithValue("@username", pUsuario);
                 CM.Parameters.AddWithValue("@password", Contra);
-                Conexion.Instancia.AbrirConexion();
+                
                 using (SqlDataReader DR = CM.ExecuteReader())
                 {
                     while (DR.Read())
@@ -56,7 +56,7 @@ namespace DAL
                     }
                 }
             }
-            Conexion.Instancia.CerrarConexion();
+            
             return x;
         }
         public List<Usuario> FiltrarUsuarios(string dni, string username, string email, string rol)
@@ -99,7 +99,7 @@ namespace DAL
             cmd.CommandText = query;
             cmd.Connection = Conexion.Instancia.ReturnConexion();
 
-            Conexion.Instancia.AbrirConexion();
+            
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -118,7 +118,7 @@ namespace DAL
                     lista.Add(u);
                 }
             }
-            Conexion.Instancia.CerrarConexion();
+            
 
             return lista;
         }
@@ -128,7 +128,7 @@ namespace DAL
             string Query = $"SELECT * FROM {TablasBD.Usuario} WHERE username = @username";
             using (SqlCommand CM = new SqlCommand(Query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 CM.Parameters.AddWithValue("@username", pUsuario);
                 using (SqlDataReader DR = CM.ExecuteReader())
                 {
@@ -138,7 +138,7 @@ namespace DAL
                     }
                 }
             }
-            Conexion.Instancia.CerrarConexion();
+            
             return U;
         }
 
@@ -148,7 +148,7 @@ namespace DAL
 
             using (SqlCommand CM = new SqlCommand(Query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 CM.Parameters.AddWithValue("@DNI", U.DNI);
                 CM.Parameters.AddWithValue("@Nombre", U.Nombre);
                 CM.Parameters.AddWithValue("@Apellido", U.Apellido);
@@ -159,7 +159,7 @@ namespace DAL
                 CM.Parameters.AddWithValue("@Idioma", U.Idioma);
                 CM.ExecuteNonQuery();
             }
-            Conexion.Instancia.CerrarConexion();
+            
         }
         public void EliminarUsuario(int dni)
         {
@@ -167,10 +167,10 @@ namespace DAL
 
             using (SqlCommand cm = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cm.Parameters.AddWithValue("@DNI", dni);
                 cm.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
         public List<string> ObtenerTodosNombresUsuarios()
@@ -179,7 +179,7 @@ namespace DAL
             string Query = $"SELECT * FROM {TablasBD.Usuario}";
             using (SqlCommand CM = new SqlCommand(Query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (SqlDataReader DR = CM.ExecuteReader())
                 {
                     while (DR.Read())
@@ -188,7 +188,7 @@ namespace DAL
                     }
                 }
             }
-            Conexion.Instancia.CerrarConexion();
+            
             return U;
         }
         public void ModificarUsuario(Usuario U)
@@ -197,7 +197,7 @@ namespace DAL
 
             using (SqlCommand cm = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cm.Parameters.AddWithValue("@Nombre", U.Nombre);
                 cm.Parameters.AddWithValue("@Apellido", U.Apellido);
                 cm.Parameters.AddWithValue("@Username", U.NombreUsuario);
@@ -206,7 +206,7 @@ namespace DAL
                 cm.Parameters.AddWithValue("@DNI", U.DNI);
                 cm.Parameters.AddWithValue("@Idioma", U.Idioma);
                 cm.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
         public List<Usuario> ObtenerTodosUsuarios()
@@ -216,7 +216,7 @@ namespace DAL
 
             using (SqlCommand cm = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 using (SqlDataReader dr = cm.ExecuteReader())
                 {
                     while (dr.Read())
@@ -237,7 +237,7 @@ namespace DAL
                     }
                 }
             }
-            Conexion.Instancia.CerrarConexion();
+            
             return usuarios;
         }
 
@@ -247,11 +247,11 @@ namespace DAL
 
             using (SqlCommand cm = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
                 cm.Parameters.AddWithValue("@Password", pPassword);
                 cm.Parameters.AddWithValue("@DNI", dni);
                 cm.ExecuteNonQuery();
-                Conexion.Instancia.CerrarConexion();
+                
             }
         }
 

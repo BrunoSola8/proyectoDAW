@@ -18,7 +18,7 @@ namespace DAL
 
             using (SqlCommand cmd = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
-                Conexion.Instancia.AbrirConexion();
+                
 
                 cmd.Parameters.AddWithValue("@Diseno", r.Diseno);
                 cmd.Parameters.AddWithValue("@Comentarios", r.Comentarios);
@@ -30,7 +30,7 @@ namespace DAL
 
                 int nuevoId = (int)cmd.ExecuteScalar();
 
-                Conexion.Instancia.CerrarConexion();
+                
 
                 return nuevoId;
             }
