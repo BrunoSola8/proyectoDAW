@@ -16,6 +16,7 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         {
             CargarRolesYGrupos();
             CargarArbolPermisos();
+            CargarPermisosAsignados();
         }
     }
 
@@ -37,13 +38,6 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         btnEliminar.Enabled = haySeleccion;
         btnModificarNombre.Enabled = haySeleccion;
         btnGuardarCambios.Enabled = haySeleccion;
-
-        if (!haySeleccion)
-        {
-            chkListPermisos.Items.Clear();
-            treeViewPermisos.Nodes.Clear();
-            return;
-        }
 
         CargarPermisosAsignados();
     }
@@ -81,9 +75,6 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
             }
         }
     }
-
-
-
     private void CargarArbolPermisos()
     {
         treeViewPermisos.Nodes.Clear();
@@ -168,7 +159,9 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
     protected void btnCrearRol_Click(object sender, EventArgs e)
     {
         GestorPermisos gestorPermisos = new GestorPermisos();
-        gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, null, true);
+        List<string> items = new List<string>();
+        foreach (ListItem item in chkListPermisos.Items) if (item.Selected) items.Add(item.Text.ToString());
+        gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, items, true);
         CargarRolesYGrupos();
         CargarArbolPermisos();
     }

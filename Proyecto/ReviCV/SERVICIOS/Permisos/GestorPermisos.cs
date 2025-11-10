@@ -24,6 +24,7 @@ namespace SERVICIOS.Permisos
                 if (compuesto != null && compuesto.ContienePermiso(nombre)) return false;
             }
 
+
             var nuevoPermiso = new PermisoCompuesto(nombre);
             dao.InsertarPermiso(nuevoPermiso, esRol);
 
