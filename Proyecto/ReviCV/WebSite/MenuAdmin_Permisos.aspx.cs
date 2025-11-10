@@ -1,5 +1,7 @@
 ﻿using SERVICIOS;
+using SERVICIOS.Permisos;
 using System;
+using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,16 +12,114 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            CargarRolesYGrupos();
+            CargarArbolPermisos();
+        }
+    }
 
+    private void CargarRolesYGrupos()
+    {
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        ddlRolesGrupos.DataSource = gestorPermisos.ObtenerPermisos("Compuesto");
+        ddlRolesGrupos.DataTextField = "nombre";
+        ddlRolesGrupos.DataValueField = "nombre";
+        ddlRolesGrupos.DataBind();
+
+        ddlRolesGrupos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
     }
 
     protected void ddlRolesGrupos_SelectedIndexChanged(object sender, EventArgs e)
     {
+        bool haySeleccion = ddlRolesGrupos.SelectedIndex > 0;
 
+        btnEliminar.Enabled = haySeleccion;
+        btnModificarNombre.Enabled = haySeleccion;
+        btnGuardarCambios.Enabled = haySeleccion;
+
+        if (!haySeleccion)
+        {
+            chkListPermisos.Items.Clear();
+            treeViewPermisos.Nodes.Clear();
+            return;
+        }
+
+        CargarPermisosAsignados();
     }
+    private void CargarPermisosAsignados()
+    {
+        chkListPermisos.Items.Clear();
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        var permisosSimples = gestorPermisos.ObtenerPermisos("Todo excepto rol");
+
+        foreach (var permiso in permisosSimples)
+        {
+            ListItem item = new ListItem(permiso.nombre, permiso.nombre);
+            chkListPermisos.Items.Add(item);
+        }
+
+        // Marcar los permisos que ya tiene el rol/grupo seleccionado
+        string rolSeleccionado = ddlRolesGrupos.SelectedValue;
+        List<Permiso> RootsPermits = gestorPermisos.ObtenerPermisosEnArbol();
+        Permiso selected = RootsPermits.Find(x => x.nombre == ddlRolesGrupos.SelectedItem.ToString());
+
+        if (selected is PermisoCompuesto compoundPermit)
+        {
+            foreach (Permiso p in compoundPermit.PermisosIncluidos) { MarcarPermisoEnLista(p); }
+        }
+    }
+
+    private void MarcarPermisoEnLista(Permiso permiso)
+    {
+        for (int i = 0; i < chkListPermisos.Items.Count; i++)
+        {
+            if (chkListPermisos.Items[i].Value == permiso.nombre)
+            {
+                chkListPermisos.Items[i].Selected = true;
+                break;
+            }
+        }
+    }
+
+
+
+    private void CargarArbolPermisos()
+    {
+        treeViewPermisos.Nodes.Clear();
+        GestorPermisos gestor = new GestorPermisos();
+
+        // Obtenemos los permisos raíz compuestos
+        var rootPermisos = gestor.ObtenerPermisosEnArbol();
+
+        // Llamada recursiva para construir todo el árbol
+        foreach (var permiso in rootPermisos)
+        {
+            AgregarNodoRecursivo(permiso, treeViewPermisos.Nodes);
+        }
+    }
+
+    private void AgregarNodoRecursivo(Permiso permiso, TreeNodeCollection parentNodes)
+    {
+        TreeNode nodo = new TreeNode(permiso.nombre);
+        parentNodes.Add(nodo);
+
+        // Si es un permiso compuesto, agregamos sus hijos
+        if (permiso is PermisoCompuesto compuesto)
+        {
+            foreach (var subPermiso in compuesto.PermisosIncluidos)
+            {
+                AgregarNodoRecursivo(subPermiso, nodo.ChildNodes);
+            }
+        }
+    }
+
+
+
 
     protected void chkListPermisos_SelectedIndexChanged(object sender, EventArgs e)
     {
+        btnGuardarCambios.Enabled = true;
     }
 
     protected void btnInicio_Click(object sender, EventArgs e)
@@ -67,16 +167,21 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
     protected void btnCrearRol_Click(object sender, EventArgs e)
     {
-
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, null, true);
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
     }
 
     protected void btnCrearGrupo_Click(object sender, EventArgs e)
     {
-
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
     }
 
     protected void btnGuardarCambios_Click(object sender, EventArgs e)
     {
-
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
     }
 }

@@ -8,7 +8,7 @@ namespace SERVICIOS.Permisos
 {
     public abstract class Permiso
     {
-        private string nombre;
+        public string nombre { get; private set; }
 
         protected Permiso(string nNombre) { nombre = nNombre; }
 

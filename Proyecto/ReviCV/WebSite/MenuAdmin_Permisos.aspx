@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="MenuAdmin_Permisos.aspx.cs" Inherits="MenuAdmin_Permisos" %>
+
 <!DOCTYPE html>
 <html lang="es">
 <head runat="server">
@@ -37,18 +38,18 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
-        .navbar .logo {
-            font-size: 20px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+            .navbar .logo {
+                font-size: 20px;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
 
-        .navbar .menu {
-            display: flex;
-            gap: 20px;
-        }
+            .navbar .menu {
+                display: flex;
+                gap: 20px;
+            }
 
         .menu-button {
             background: none;
@@ -64,10 +65,10 @@
             text-decoration: none;
         }
 
-        .menu-button:hover {
-            background-color: #34495e;
-            border-radius: 4px;
-        }
+            .menu-button:hover {
+                background-color: #34495e;
+                border-radius: 4px;
+            }
 
         .contenido-principal {
             flex: 1;
@@ -101,12 +102,12 @@
             flex-direction: column;
         }
 
-        .columna h3 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            color: #2c3e50;
-            font-size: 16px;
-        }
+            .columna h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+                color: #2c3e50;
+                font-size: 16px;
+            }
 
         .campo-select {
             width: 100%;
@@ -128,26 +129,26 @@
             transition: opacity 0.3s ease;
         }
 
-        .boton:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+            .boton:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
 
         .boton-rojo {
             background-color: #c0392b;
         }
 
-        .boton-rojo:hover:not(:disabled) {
-            background-color: #a93226;
-        }
+            .boton-rojo:hover:not(:disabled) {
+                background-color: #a93226;
+            }
 
         .boton-azul {
             background-color: #2980b9;
         }
 
-        .boton-azul:hover:not(:disabled) {
-            background-color: #1c598a;
-        }
+            .boton-azul:hover:not(:disabled) {
+                background-color: #1c598a;
+            }
 
         .lista-permisos {
             border: 1px solid #ccc;
@@ -167,14 +168,14 @@
             gap: 8px;
         }
 
-        .item-permiso input[type="checkbox"] {
-            cursor: pointer;
-        }
+            .item-permiso input[type="checkbox"] {
+                cursor: pointer;
+            }
 
-        .item-permiso label {
-            cursor: pointer;
-            flex: 1;
-        }
+            .item-permiso label {
+                cursor: pointer;
+                flex: 1;
+            }
 
         .arbol-permisos {
             border: 1px solid #ccc;
@@ -191,9 +192,9 @@
             margin-bottom: 5px;
         }
 
-        .nodo-arbol.raiz {
-            margin-left: 0;
-        }
+            .nodo-arbol.raiz {
+                margin-left: 0;
+            }
 
         .campo-texto {
             width: 100%;
@@ -228,9 +229,9 @@
             background-color: #27ae60;
         }
 
-        .boton-verde:hover:not(:disabled) {
-            background-color: #229954;
-        }
+            .boton-verde:hover:not(:disabled) {
+                background-color: #229954;
+            }
 
         .boton-ayuda {
             position: fixed;
@@ -249,9 +250,9 @@
             transition: background-color 0.3s ease;
         }
 
-        .boton-ayuda:hover {
-            background-color: #1c598a;
-        }
+            .boton-ayuda:hover {
+                background-color: #1c598a;
+            }
 
         @media (max-width: 768px) {
             .navbar {
@@ -261,10 +262,10 @@
                 padding: 10px 20px;
             }
 
-            .navbar .menu {
-                flex-direction: column;
-                width: 100%;
-            }
+                .navbar .menu {
+                    flex-direction: column;
+                    width: 100%;
+                }
 
             .menu-button {
                 width: 100%;
@@ -280,6 +281,7 @@
 </head>
 <body>
     <form runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" />
         <div class="contenedor">
             <div class="navbar">
                 <div class="logo">
@@ -317,21 +319,33 @@
                         <asp:Button ID="btnModificarNombre" runat="server" Text="Modificar Nombre" CssClass="boton boton-azul" Enabled="false" OnClick="btnModificarNombre_Click" />
                     </div>
 
-                    <div class="columna">
-                        <h3>Permisos Asignados</h3>
-                        <div class="lista-permisos">
-                            <asp:CheckBoxList ID="chkListPermisos" runat="server" CssClass="lista-permisos-checkbox" AutoPostBack="true" OnSelectedIndexChanged="chkListPermisos_SelectedIndexChanged">
-                            </asp:CheckBoxList>
-                        </div>
-                    </div>
+                    <asp:UpdatePanel ID="upPermisosAsignados" runat="server" UpdateMode="Conditional" class="columna">
+                        <ContentTemplate>
+                            <h3>Permisos Asignados</h3>
+                            <div class="lista-permisos">
+                                <asp:CheckBoxList ID="chkListPermisos" runat="server"
+                                    CssClass="lista-permisos-checkbox"
+                                    AutoPostBack="true" OnSelectedIndexChanged="chkListPermisos_SelectedIndexChanged">
+                                </asp:CheckBoxList>
+                            </div>
+                        </ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="ddlRolesGrupos" EventName="SelectedIndexChanged" />
+                        </Triggers>
+                    </asp:UpdatePanel>
 
-                    <div class="columna">
-                        <h3>Visualización</h3>
-                        <div class="arbol-permisos">
-                            <asp:TreeView ID="treeViewPermisos" runat="server" CssClass="arbol-permisos-tree">
-                            </asp:TreeView>
-                        </div>
-                    </div>
+                    <asp:UpdatePanel ID="upVisualizacion" runat="server" UpdateMode="Conditional" class="columna">
+                        <ContentTemplate>
+                            <h3>Visualización</h3>
+                            <div class="arbol-permisos">
+                                <asp:TreeView ID="treeViewPermisos" runat="server" CssClass="arbol-permisos-tree">
+                                </asp:TreeView>
+                            </div>
+                        </ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="ddlRolesGrupos" EventName="SelectedIndexChanged" />
+                        </Triggers>
+                    </asp:UpdatePanel>
                 </div>
 
                 <div class="seccion-inferior">
@@ -349,7 +363,7 @@
                 </div>
             </div>
 
-    </div>
-</form>
+        </div>
+    </form>
 </body>
 </html>

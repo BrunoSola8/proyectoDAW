@@ -95,7 +95,6 @@ namespace SERVICIOS.Permisos
             return dao.LeerPermisos(tipoConvertido);
         }
 
-
         public List<Permiso> ObtenerPermisosEnArbol() => dao.LeerPermisosEnArbol();
 
         public bool EsRol(string nombrePermiso) => dao.EsRol(nombrePermiso);

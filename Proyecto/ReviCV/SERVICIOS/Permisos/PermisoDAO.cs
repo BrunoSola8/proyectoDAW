@@ -50,6 +50,8 @@ namespace SERVICIOS.Permisos
                 {
                     while (reader.Read())
                     {
+                        var a = reader["CompuestoNombre"].ToString();
+                        var b = reader["IncluidoNombre"].ToString();
                         var compuesto = (PermisoCompuesto)permisosCompuestos.Find(x => x.getNombre() == reader["CompuestoNombre"].ToString());
 
                         var incluido = permisos.Find(x => x.getNombre() == reader["IncluidoNombre"].ToString());
