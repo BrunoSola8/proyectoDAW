@@ -51,6 +51,8 @@
     <Compile Include="Encriptador.cs" />
     <Compile Include="GestorIntegridad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Traducciones\IObserver.cs" />
+    <Compile Include="Traducciones\TraductorDAL.cs" />
     <Compile Include="Validador.cs" />
   </ItemGroup>
   <ItemGroup>

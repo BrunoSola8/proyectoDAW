@@ -1,8 +1,11 @@
-﻿using System;
+﻿using SERVICIOS;
+using SERVICIOS.Traducciones;
+using System;
 using System.Web.UI;
-using SERVICIOS;
+using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
-public partial class MenuAdmin : Page
+public partial class MenuAdmin : Page, IObserver
 {
     protected void btnInicio_Click(object sender, EventArgs e)
     {
@@ -53,10 +56,60 @@ public partial class MenuAdmin : Page
         {
             Response.Redirect("LandingPage.aspx");
         }
+        Actualizar();
     }
 
     protected void btnVerPerfilUsuario_Click(object sender, EventArgs e)
     {
         Response.Redirect("PaginaPerfilUsuario.aspx");
     }
+    public void Actualizar()
+    {
+        RecorrerControles(this);
+    }
+    void RecorrerControles(Control controlPadre)
+    {
+        TraductorDAL traductor = new TraductorDAL();
+        foreach (Control c in controlPadre.Controls)
+        {
+            if (c is LinkButton lbl && lbl.Attributes["data-key"] != null)
+            {
+                string clave = lbl.Attributes["data-key"];
+                lbl.Text = traductor.Traducir(clave);
+            }
+            else if (c is Button btn && btn.Attributes["data-key"] != null)
+            {
+                string clave = btn.Attributes["data-key"];
+                btn.Text = traductor.Traducir(clave);
+            }
+            else if (c is HtmlGenericControl html)
+            {
+                if (html.Attributes["data-key"] != null)
+                {
+                    string clave = html.Attributes["data-key"];
+                    html.InnerText = traductor.Traducir(clave);
+                }
+                else if (html.TagName.Equals("p", StringComparison.OrdinalIgnoreCase))
+                {
+                    string clave = html.Attributes["data-key"];
+                    html.InnerText = traductor.Traducir(clave);
+                }
+                else if (html.TagName.Equals("h1", StringComparison.OrdinalIgnoreCase))
+                {
+                    string clave = html.Attributes["data-key"];
+                    html.InnerText = traductor.Traducir(clave);
+                }
+                else if (html.TagName.Equals("h2", StringComparison.OrdinalIgnoreCase))
+                {
+                    string clave = html.Attributes["data-key"];
+                    html.InnerText = traductor.Traducir(clave);
+                }
+            }
+            if (c.HasControls())
+            {
+                RecorrerControles(c);
+            }
+        }
+    }
+
 }

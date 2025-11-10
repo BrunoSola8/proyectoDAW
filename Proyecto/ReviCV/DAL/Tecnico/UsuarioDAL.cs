@@ -112,7 +112,8 @@ namespace DAL
                         NombreUsuario = reader["username"].ToString(),
                         Password = reader["password"].ToString(),
                         Email = reader["Mail"].ToString(),
-                        Rol = reader["Rol"].ToString()
+                        Rol = reader["Rol"].ToString(),
+                        Idioma = reader["Idioma"].ToString()
                     };
                     lista.Add(u);
                 }
@@ -133,7 +134,7 @@ namespace DAL
                 {
                     if (DR.Read())
                     {
-                        U = new Usuario(int.Parse(DR[0].ToString()), DR[1].ToString(), DR[2].ToString(), DR[3].ToString(), "", DR[5].ToString(), DR[6].ToString());
+                        U = new Usuario(int.Parse(DR[0].ToString()), DR[1].ToString(), DR[2].ToString(), DR[3].ToString(), "", DR[5].ToString(), DR[6].ToString(), DR[7].ToString());
                     }
                 }
             }
@@ -143,7 +144,7 @@ namespace DAL
 
         public void InsertarUsuario(Usuario U)
         {
-            string Query = $"INSERT INTO {TablasBD.Usuario} (DNI, Nombre, Apellido, username, password, Mail, Rol) VALUES (@DNI, @Nombre, @Apellido, @Username, @Pass, @Mail, @Rol)";
+            string Query = $"INSERT INTO {TablasBD.Usuario} (DNI, Nombre, Apellido, username, password, Mail, Rol, Idioma) VALUES (@DNI, @Nombre, @Apellido, @Username, @Pass, @Mail, @Rol, @Idioma)";
 
             using (SqlCommand CM = new SqlCommand(Query, Conexion.Instancia.ReturnConexion()))
             {
@@ -155,6 +156,7 @@ namespace DAL
                 CM.Parameters.AddWithValue("@Pass", U.Password);
                 CM.Parameters.AddWithValue("@Mail", U.Email);
                 CM.Parameters.AddWithValue("@Rol", U.Rol);
+                CM.Parameters.AddWithValue("@Idioma", U.Idioma);
                 CM.ExecuteNonQuery();
             }
             Conexion.Instancia.CerrarConexion();
@@ -191,7 +193,7 @@ namespace DAL
         }
         public void ModificarUsuario(Usuario U)
         {
-            string query = $@"UPDATE {TablasBD.Usuario} SET Nombre = @Nombre,Apellido = @Apellido, username = @Username, Mail = @Mail, Rol = @Rol WHERE DNI = @DNI";
+            string query = $@"UPDATE {TablasBD.Usuario} SET Nombre = @Nombre,Apellido = @Apellido, username = @Username, Mail = @Mail, Rol = @Rol, Idioma = @Idioma WHERE DNI = @DNI";
 
             using (SqlCommand cm = new SqlCommand(query, Conexion.Instancia.ReturnConexion()))
             {
@@ -202,6 +204,7 @@ namespace DAL
                 cm.Parameters.AddWithValue("@Mail", U.Email);
                 cm.Parameters.AddWithValue("@Rol", U.Rol);
                 cm.Parameters.AddWithValue("@DNI", U.DNI);
+                cm.Parameters.AddWithValue("@Idioma", U.Idioma);
                 cm.ExecuteNonQuery();
                 Conexion.Instancia.CerrarConexion();
             }
@@ -226,7 +229,8 @@ namespace DAL
                             dr["username"].ToString(),
                             "",
                             dr["Mail"].ToString(),
-                            dr["Rol"].ToString()
+                            dr["Rol"].ToString(),
+                            dr["Idioma"].ToString()
                         );
 
                         usuarios.Add(u);

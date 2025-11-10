@@ -304,6 +304,17 @@
                                     </div>
                                 </div>
 
+                                <div class="grupo-input">
+    <label class="form-label">Idioma</label>
+    <div class="txt-input">
+        <asp:DropDownList ID="ddlIdioma" runat="server" CssClass="form-input">
+            <asp:ListItem Text="Español" Value="es" />
+            <asp:ListItem Text="Inglés" Value="en" />
+            <asp:ListItem Text="Portugués" Value="pt" />
+        </asp:DropDownList>
+    </div>
+</div>
+
                                 <div class="botones-accion">
                                     <asp:Button ID="btnGuardar" runat="server" CssClass="btn btn-guardar" Text="💾 Guardar Cambios" OnClick="btnGuardar_Click" />
                                     <asp:Button ID="btnCancelar" runat="server" CssClass="btn btn-cancelar" Text="✖️ Cancelar" OnClick="btnCancelar_Click" CausesValidation="False" UseSubmitBehavior="false" />

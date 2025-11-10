@@ -12,19 +12,16 @@ public partial class Sign_up : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Rol"] != null) Response.Redirect("LandingPage.aspx");
         if (Application["EstadoBD"] == null)
         {
             GestorIntegridad gestor = new GestorIntegridad();
             string bdErrores = gestor.VerificarIntegridadTodasLasTablas();
             Application["EstadoBD"] = bdErrores == "" ? true : false;
         }
-        if (Application["EstadoBD"].Equals(false)) Response.Redirect("AvisoErrorBD.aspx");
+       // if (Application["EstadoBD"].Equals(false)) Response.Redirect("AvisoErrorBD.aspx");
         ErrorContraseñasLB.Visible = false;
         Page.UnobtrusiveValidationMode = System.Web.UI.UnobtrusiveValidationMode.None;
     }
-
-
     protected void Button1_Click(object sender, EventArgs e)
     {
         string dni = TbDNI.Text.Trim();
@@ -32,10 +29,11 @@ public partial class Sign_up : System.Web.UI.Page
         string apellido = TbApellido.Text.Trim();
         string username = TbUserName.Text.Trim();
         string contraseña = TbPassw1.Text.Trim();
+        string idioma = DropDownList1.SelectedValue.ToString();
         string repetirContraseña = TbPassw2.Text.Trim();
         string mail = TbMail.Text.Trim();
         GestorUsuario gestorUsuario = new GestorUsuario();
-        List<string> errores = gestorUsuario.ValidarSignUp(dni, nombre, apellido, username, contraseña, mail);
+        List<string> errores = gestorUsuario.ValidarSignUp(dni, nombre, apellido, username,idioma, contraseña, mail);
         if (contraseña != repetirContraseña)
         {
             errores.Add("contraseña");
@@ -65,6 +63,10 @@ public partial class Sign_up : System.Web.UI.Page
                         rfvUserName.ErrorMessage = "* Username inválido o ya existe";
                         rfvUserName.IsValid = false;
                         break;
+                    case "idioma":
+                        rfvIdioma.ErrorMessage = "* Idioma inválido";
+                        rfvIdioma.IsValid = false;
+                        break;
                     case "contraseña":
                         rfvPass1.ErrorMessage = "* Contraseña inválida";
                         rfvPass1.IsValid = false;
@@ -86,6 +88,7 @@ public partial class Sign_up : System.Web.UI.Page
             username,
             encriptador.EncriptarIrreversible(contraseña),
             mail
+            ,idioma
         );
 
         gestorUsuario.InsertarUsuario(usuario);

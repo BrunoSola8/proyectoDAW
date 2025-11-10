@@ -1,15 +1,55 @@
-﻿using ENTIDADES;
-using BLL;
+﻿using BLL;
+using ENTIDADES;
 using SERVICIOS;
+using SERVICIOS.Traducciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
-public partial class Login : System.Web.UI.Page
+public partial class Login : System.Web.UI.Page, IObserver
 {
+    public void Actualizar()
+    {
+        RecorrerControles(this);
+    }
+    void RecorrerControles(Control controlPadre)
+    {
+        TraductorDAL traductor = new TraductorDAL();
+        foreach (Control c in controlPadre.Controls)
+        {
+            if (c is Label lbl && lbl.Attributes["data-key"] != null)
+            {
+                string clave = lbl.Attributes["data-key"];
+                lbl.Text = traductor.Traducir(clave);
+            }
+            else if (c is Button btn && btn.Attributes["data-key"] != null)
+            {
+                string clave = btn.Attributes["data-key"];
+                btn.Text = traductor.Traducir(clave);
+            }
+            else if (c is HtmlGenericControl html)
+            {
+                if (html.Attributes["data-key"] != null)
+                {
+                    string clave = html.Attributes["data-key"];
+                    html.InnerText = traductor.Traducir(clave);
+                }
+                else if (html.TagName.Equals("h2", StringComparison.OrdinalIgnoreCase))
+                {
+                    html.InnerText = html.InnerText.ToUpper();
+                }
+            }
+            if (c.HasControls())
+            {
+                RecorrerControles(c);
+            }
+        }
+    }
+
     protected void btnLogin_Click(object sender, EventArgs e)
     {
         try
@@ -73,10 +113,16 @@ public partial class Login : System.Web.UI.Page
     {
         Session["username"] = $"{u.NombreUsuario}";
         Session["Rol"] = $"{u.Rol}";
+        Session["Idioma"] = $"{u.Idioma}";
     }
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        TraductorDAL traductor = new TraductorDAL();
+        traductor.Suscribe(this);
+        traductor.Notify();
+        traductor.CargarTraduccionesDesdeBD("Español");
         if (Session["Rol"] != null) Response.Redirect("LandingPage.aspx");
+        Actualizar();
     }
 }
