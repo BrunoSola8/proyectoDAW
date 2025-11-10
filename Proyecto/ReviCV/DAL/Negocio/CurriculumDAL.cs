@@ -386,7 +386,6 @@ namespace DAL
 
             return listaCV;
         }
-
         public void EliminarCurriculum(int idCV)
         {
             string query = $"DELETE FROM {TablasBD.Curriculum} WHERE ID_CV = @Id";

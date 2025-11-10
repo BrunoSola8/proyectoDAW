@@ -55,7 +55,6 @@ namespace SERVICIOS.Traducciones
             using (SqlCommand cmd = new SqlCommand(query, conexion))
             {
                 cmd.Parameters.AddWithValue("@Idioma", idioma);
-                Conexion.Instancia.AbrirConexion();
 
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -66,7 +65,6 @@ namespace SERVICIOS.Traducciones
                         lista.Add((etiqueta, traduccion));
                     }
                 }
-                Conexion.Instancia.CerrarConexion();
             }
 
             return lista;
