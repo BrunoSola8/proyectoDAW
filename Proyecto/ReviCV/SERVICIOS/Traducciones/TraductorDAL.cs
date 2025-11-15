@@ -11,12 +11,18 @@ namespace SERVICIOS.Traducciones
 {
     public class TraductorDAL
     {
+        private static TraductorDAL Instance;
+        public static TraductorDAL TranslatorInstance
+        {
+            get
+            {
+                if (Instance == null) Instance = new TraductorDAL();
+                return Instance;
+            }
+        }
         public TraductorDAL()
         {
-            ObserversList = new List<IObserver>();
-            LenguajeActual = "Español";
             traducciones = new Dictionary<string, string>();
-            CargarTraduccionesDesdeBD(LenguajeActual);
         }
 
         List<IObserver> ObserversList;
@@ -27,7 +33,6 @@ namespace SERVICIOS.Traducciones
         {
             try
             {
-                if (traducciones.Count == 0) CargarTraduccionesDesdeBD("Español");
                 string translation = "";
                 return translation = traducciones[toTranslate];
             }
@@ -35,6 +40,8 @@ namespace SERVICIOS.Traducciones
         }
         public void CargarTraduccionesDesdeBD(string idioma)
         {
+           
+            LenguajeActual = idioma;
             traducciones.Clear();
             var lista = ObtenerTraduccionesPorIdioma(idioma);
 

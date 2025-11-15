@@ -56,6 +56,7 @@ public partial class MenuAdmin : Page, IObserver
         {
             Response.Redirect("LandingPage.aspx");
         }
+        TraductorDAL.TranslatorInstance.CargarTraduccionesDesdeBD(Session["Idioma"].ToString());
         Actualizar();
     }
 
@@ -69,40 +70,39 @@ public partial class MenuAdmin : Page, IObserver
     }
     void RecorrerControles(Control controlPadre)
     {
-        TraductorDAL traductor = new TraductorDAL();
         foreach (Control c in controlPadre.Controls)
         {
             if (c is LinkButton lbl && lbl.Attributes["data-key"] != null)
             {
                 string clave = lbl.Attributes["data-key"];
-                lbl.Text = traductor.Traducir(clave);
+                lbl.Text = TraductorDAL.TranslatorInstance.Traducir(clave);
             }
             else if (c is Button btn && btn.Attributes["data-key"] != null)
             {
                 string clave = btn.Attributes["data-key"];
-                btn.Text = traductor.Traducir(clave);
+                btn.Text = TraductorDAL.TranslatorInstance.Traducir(clave);
             }
             else if (c is HtmlGenericControl html)
             {
                 if (html.Attributes["data-key"] != null)
                 {
                     string clave = html.Attributes["data-key"];
-                    html.InnerText = traductor.Traducir(clave);
+                    html.InnerText = TraductorDAL.TranslatorInstance.Traducir(clave);
                 }
                 else if (html.TagName.Equals("p", StringComparison.OrdinalIgnoreCase))
                 {
                     string clave = html.Attributes["data-key"];
-                    html.InnerText = traductor.Traducir(clave);
+                    html.InnerText = TraductorDAL.TranslatorInstance.Traducir(clave);
                 }
                 else if (html.TagName.Equals("h1", StringComparison.OrdinalIgnoreCase))
                 {
                     string clave = html.Attributes["data-key"];
-                    html.InnerText = traductor.Traducir(clave);
+                    html.InnerText = TraductorDAL.TranslatorInstance.Traducir(clave);
                 }
                 else if (html.TagName.Equals("h2", StringComparison.OrdinalIgnoreCase))
                 {
                     string clave = html.Attributes["data-key"];
-                    html.InnerText = traductor.Traducir(clave);
+                    html.InnerText = TraductorDAL.TranslatorInstance.Traducir(clave);
                 }
             }
             if (c.HasControls())

@@ -21,8 +21,18 @@ public partial class PaginaPerfilUsuario : System.Web.UI.Page
             SettearHiddenFields();
             CargarIdiomas();
             CargarRubros();
-
+            CargarIdiomas2();
+            string idiomaUsuario = Session["Idioma"].ToString();
+            ddlIdioma.SelectedValue = idiomaUsuario;
         }
+    }
+
+    private void CargarIdiomas2()
+    {
+        ddlIdioma.Items.Clear();
+        ddlIdioma.Items.Add(new ListItem("Español", "Español"));
+        ddlIdioma.Items.Add(new ListItem("Inglés", "Ingles"));
+        ddlIdioma.Items.Add(new ListItem("Portugués", "Portugues"));
     }
 
     //Esto se ejecuta antes que Page_Load y sirve para crear controles dinamicos como los de los cvs que tiene cada usuario - Matt
@@ -31,7 +41,8 @@ public partial class PaginaPerfilUsuario : System.Web.UI.Page
         CargarCurriculums();
     }
 
-    
+
+   
     private void SettearHiddenFields()
     {
         string nombreUsuario = Session["username"] as string;
@@ -117,6 +128,7 @@ public partial class PaginaPerfilUsuario : System.Web.UI.Page
             };
             gestorUsuario.ModificarUsuario(usuario);
             Session["username"] = username.Text;
+            Session["Idioma"] = ddlIdioma.Text;
             SettearHiddenFields();
 
             string script = @"

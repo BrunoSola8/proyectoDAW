@@ -118,11 +118,11 @@ public partial class Login : System.Web.UI.Page, IObserver
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        TraductorDAL traductor = new TraductorDAL();
-        traductor.Suscribe(this);
-        traductor.Notify();
-        traductor.CargarTraduccionesDesdeBD("Español");
+        //TraductorDAL traductor = new TraductorDAL();
+        //traductor.Suscribe(this);
+        //traductor.Notify();
+        //traductor.CargarTraduccionesDesdeBD("Español");
         if (Session["Rol"] != null) Response.Redirect("LandingPage.aspx");
-        Actualizar();
+        //Actualizar();
     }
 }

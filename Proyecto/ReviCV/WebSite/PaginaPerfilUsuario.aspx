@@ -174,41 +174,46 @@
             position: relative;
         }
 
-        .btn {
-            width: 100%;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
+       .botones-accion {
+    display: flex;
+    justify-content: center;   /* centra los botones horizontalmente */
+    gap: 12px;                 /* espacio entre botones */
+    margin-top: 20px;          /* espacio superior razonable */
+    flex-wrap: wrap;           /* si hay poco espacio, se acomodan en varias filas */
+}
 
-        .btn-guardar {
-            background: #667eea;
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
+.btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
 
-            .btn-guardar:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            }
+.btn:hover {
+    transform: scale(1.03);
+}
 
-        .btn-cancelar {
-            background-color: #f3f4f6;
-            color: #374151;
-            border: 1px solid #d1d5db;
-        }
+/* Específicos */
+.btn-guardar {
+    background-color: #007bff;
+    color: white;
+}
 
-            .btn-cancelar:hover {
-                background-color: #e5e7eb;
-            }
+.btn-guardar:hover {
+    background-color: #0056b3;
+}
+
+.btn-cancelar {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-cancelar:hover {
+    background-color: #b02a37;
+}
+
 
         .btn-rojo {
             background: #ef4444;
@@ -220,12 +225,13 @@
                 box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
             }
 
-        .botones-accion {
-            display: flex;
-            gap: 12px;
-            margin-top: 110px;
-            margin-bottom: -110px;
-        }
+      .botones-accion {
+    display: flex;
+    justify-content: center;   /* centra los botones horizontalmente */
+    gap: 12px;                 /* espacio entre botones */
+    margin-top: 20px;          /* espacio superior razonable */
+    flex-wrap: wrap;           /* si hay poco espacio, se acomodan en varias filas */
+}
 
         .botones-inferiores {
             padding: 20px;
@@ -305,15 +311,15 @@
                                 </div>
 
                                 <div class="grupo-input">
-    <label class="form-label">Idioma</label>
-    <div class="txt-input">
-        <asp:DropDownList ID="ddlIdioma" runat="server" CssClass="form-input">
-            <asp:ListItem Text="Español" Value="es" />
-            <asp:ListItem Text="Inglés" Value="en" />
-            <asp:ListItem Text="Portugués" Value="pt" />
-        </asp:DropDownList>
-    </div>
-</div>
+                                 <label class="form-label">Idioma</label>
+                                   <div class="txt-input">
+                                   <asp:DropDownList ID="ddlIdioma" runat="server" CssClass="form-input">
+                                   <asp:ListItem Text="Español" Value="Español" />
+                                     <asp:ListItem Text="Inglés" Value="Ingles" />
+                                     <asp:ListItem Text="Portugués" Value="Portugues" />
+                                      </asp:DropDownList>
+                                       </div>
+                                         </div>
 
                                 <div class="botones-accion">
                                     <asp:Button ID="btnGuardar" runat="server" CssClass="btn btn-guardar" Text="💾 Guardar Cambios" OnClick="btnGuardar_Click" />
@@ -350,6 +356,7 @@
                 </div>
             </div>
         </div>
+        
 
         <asp:HiddenField ID="hfOriginalUsername" runat="server" />
         <asp:HiddenField ID="hfOriginalFirstName" runat="server" />
