@@ -341,7 +341,7 @@ namespace DAL
                         int idCV = dr.GetInt32(dr.GetOrdinal("ID_CV"));
                         int idIdioma = dr.IsDBNull(dr.GetOrdinal("Idioma")) ? -1 : dr.GetInt32(dr.GetOrdinal("Idioma"));
                         int idRubro = dr.IsDBNull(dr.GetOrdinal("Rubro")) ? -1 : dr.GetInt32(dr.GetOrdinal("Rubro"));
-                        string nombreArchivo = dr.GetString(dr.GetOrdinal("NombreArchivo"));
+                        //string nombreArchivo = dr.GetString(dr.GetOrdinal("NombreArchivo"));
 
                         byte[] archivoBytes = null;
                         if (!dr.IsDBNull(dr.GetOrdinal("Curriculum")))
@@ -359,7 +359,7 @@ namespace DAL
                             ArchivoCV = archivoBytes,
                             Idioma = (idIdioma, ""),
                             Rubro = (idRubro, ""),
-                            Nombre = nombreArchivo
+                            Nombre = "xd"
                         };
 
                         listaCV.Add(cv);
@@ -383,7 +383,6 @@ namespace DAL
 
             return listaCV;
         }
-
         public void EliminarCurriculum(int idCV)
         {
             string query = $"DELETE FROM {TablasBD.Curriculum} WHERE ID_CV = @Id";

@@ -55,7 +55,20 @@
                     ControlToValidate="TbMail"
                     ErrorMessage="* Campo obligatorio"
                     ForeColor="Red" Display="Dynamic" />
+                
             </div>
+          <div class="form-group">
+   <label for="ddlIdioma">Idioma</label>
+<asp:DropDownList ID="DropDownList1" runat="server" CssClass="dropdown-input">
+        <asp:ListItem Text="Español" Value="es" />
+        <asp:ListItem Text="Inglés" Value="en" />
+    </asp:DropDownList>
+    <asp:RequiredFieldValidator ID="rfvIdioma" runat="server"
+        ControlToValidate="DropDownList1"
+        InitialValue=""
+        ErrorMessage="* Campo obligatorio"
+        ForeColor="Red" Display="Dynamic" />
+</div>
 
             <div class="form-group">
                 <label for="TbPassw1">Contraseña</label>

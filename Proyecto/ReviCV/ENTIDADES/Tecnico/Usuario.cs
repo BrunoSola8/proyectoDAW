@@ -15,8 +15,9 @@ namespace ENTIDADES
         public string Password { get; set; }
         public string Email { get; set; }
         public string Rol { get; set; }
+        public string Idioma { get; set; }
 
-        public Usuario(int pDNI, string pNombre, string pApellido, string pUsuario, string pPassword, string pEmail, string rol)
+        public Usuario(int pDNI, string pNombre, string pApellido, string pUsuario, string pPassword, string pEmail, string rol, string idioma)
         {
             DNI = pDNI;
             Nombre = pNombre;
@@ -25,8 +26,9 @@ namespace ENTIDADES
             Password = pPassword;
             Email = pEmail;
             Rol = rol;
+            Idioma = idioma;
         }
-        public Usuario(int pDNI, string pNombre, string pApellido, string pUsuario, string pPassword, string pEmail)
+        public Usuario(int pDNI, string pNombre, string pApellido, string pUsuario, string pPassword, string pEmail, string idioma)
         {
             DNI = pDNI;
             Nombre = pNombre;
@@ -35,6 +37,7 @@ namespace ENTIDADES
             Password = pPassword;
             Email = pEmail;
             Rol = "Usuario";
+            Idioma = idioma;
         }
         public Usuario()
         {
@@ -51,7 +54,8 @@ namespace ENTIDADES
                 NombreUsuario,
                 Password,
                 Email,
-                Rol
+                Rol,
+                Idioma
             };
         }
     }

@@ -35,7 +35,7 @@ namespace BLL
             UsuarioDAL usuarioDAL = new UsuarioDAL();
             return usuarioDAL.UsernameRepetido(username);
         }
-        public List<string> ValidarSignUp(string dni, string Nombre, string Apellido, string username, string contraseña, string mail)
+        public List<string> ValidarSignUp(string dni, string Nombre, string Apellido, string username,string idioma, string contraseña, string mail)
         {
             HashSet<string> errores = new HashSet<string>();
 
@@ -50,6 +50,9 @@ namespace BLL
 
             if (string.IsNullOrWhiteSpace(username) || username.Length < 4)
                 errores.Add("username");
+
+            if (string.IsNullOrWhiteSpace(idioma))
+                errores.Add("idioma");
 
             if (string.IsNullOrWhiteSpace(contraseña))
                 errores.Add("contraseña");
