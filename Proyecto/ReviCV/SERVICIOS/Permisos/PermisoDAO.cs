@@ -18,7 +18,6 @@ namespace SERVICIOS.Permisos
 
             try
             {
-                // 1) Leer permisos
                 using (var conn = Conexion.Instancia.ReturnConexion())
                 using (var cmd = new SqlCommand("SELECT * FROM Permiso", conn))
                 using (var reader = cmd.ExecuteReader())
@@ -46,7 +45,6 @@ namespace SERVICIOS.Permisos
                     }
                 }
 
-                // 2) Leer relaciones y armar el árbol
                 using (var conn = Conexion.Instancia.ReturnConexion())
                 using (var cmd = new SqlCommand("SELECT * FROM PermisoRelacion", conn))
                 using (var reader = cmd.ExecuteReader())
@@ -55,8 +53,6 @@ namespace SERVICIOS.Permisos
                     {
                         string padre = reader["CompuestoNombre"].ToString();
                         string hijo = reader["IncluidoNombre"].ToString();
-
-                        // SEGURO: existe en el diccionario
                         var compuesto = (PermisoCompuesto)map[padre];
                         var incluido = map[hijo];
 
@@ -68,7 +64,6 @@ namespace SERVICIOS.Permisos
             }
             catch
             {
-                // si falla, devolvés un árbol potencialmente incompleto, pero al menos consistente.
                 return compuestos.Values.ToList();
             }
         }
