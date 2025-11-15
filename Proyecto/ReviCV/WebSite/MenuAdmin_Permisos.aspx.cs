@@ -10,6 +10,9 @@ using System.Web.UI.WebControls;
 
 public partial class MenuAdmin_Permisos : System.Web.UI.Page
 {
+    private Lazy<GestorPermisos> _gestor = new Lazy<GestorPermisos>(() => new GestorPermisos());
+    private GestorPermisos GP => _gestor.Value;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -22,12 +25,12 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
     private void CargarRolesYGrupos()
     {
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        List<Permiso> permisos = gestorPermisos.ObtenerPermisos("Compuesto");
+        List<Permiso> permisos = GP.ObtenerPermisos("Compuesto");
         permisos.RemoveAll(x => x.nombre == "Administrador");
 
         ddlRolesGrupos.DataSource = permisos.Select(p =>
-            new {
+            new
+            {
                 nombre = ((p as PermisoCompuesto).EsRol ? "ROL: " : "GRUPO: ") + p.nombre,
                 valor = p.nombre
             }
@@ -37,10 +40,8 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         ddlRolesGrupos.DataValueField = "valor";
         ddlRolesGrupos.DataBind();
 
-
         ddlRolesGrupos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
     }
-
 
     protected void ddlRolesGrupos_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -56,22 +57,21 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
     private void CargarPermisosAsignados()
     {
         chkListPermisos.Items.Clear();
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        var permisosSimples = gestorPermisos.ObtenerPermisos("Todos excepto rol");
+        var permisosSimples = GP.ObtenerPermisos("Todos excepto rol");
 
         foreach (var permiso in permisosSimples)
         {
-            ListItem item = new ListItem(permiso.nombre, permiso.nombre);
-            chkListPermisos.Items.Add(item);
+            chkListPermisos.Items.Add(new ListItem(permiso.nombre, permiso.nombre));
         }
 
         string rolSeleccionado = ddlRolesGrupos.SelectedValue;
-        List<Permiso> RootsPermits = gestorPermisos.ObtenerPermisosEnArbol();
-        Permiso selected = RootsPermits.Find(x => x.nombre == ddlRolesGrupos.SelectedValue.ToString());
+        List<Permiso> RootsPermits = GP.ObtenerPermisosEnArbol();
+        Permiso selected = RootsPermits.Find(x => x.nombre == rolSeleccionado);
 
         if (selected is PermisoCompuesto compoundPermit)
         {
-            foreach (Permiso p in compoundPermit.PermisosIncluidos) { MarcarPermisoEnLista(p); }
+            foreach (Permiso p in compoundPermit.PermisosIncluidos)
+                MarcarPermisoEnLista(p);
         }
     }
 
@@ -86,15 +86,12 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
             }
         }
     }
+
     private void CargarArbolPermisos()
     {
         treeViewPermisos.Nodes.Clear();
-        GestorPermisos gestor = new GestorPermisos();
+        var rootPermisos = GP.ObtenerPermisosEnArbol();
 
-        // Obtenemos los permisos raíz compuestos
-        var rootPermisos = gestor.ObtenerPermisosEnArbol();
-
-        // Llamada recursiva para construir todo el árbol
         foreach (var permiso in rootPermisos)
         {
             AgregarNodoRecursivo(permiso, treeViewPermisos.Nodes);
@@ -114,11 +111,6 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
             foreach (var sub in comp.PermisosIncluidos)
                 AgregarNodoRecursivo(sub, nodo.ChildNodes);
     }
-
-
-
-
-
 
     protected void chkListPermisos_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -147,15 +139,12 @@ Swal.fire({{
 
     protected void btnEliminarConfirmar_Click(object sender, EventArgs e)
     {
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        gestorPermisos.QuitarPermiso(ddlRolesGrupos.Text);
+        GP.QuitarPermiso(ddlRolesGrupos.Text);
 
         CargarRolesYGrupos();
         CargarArbolPermisos();
         CargarPermisosAsignados();
     }
-
-
 
     protected void btnModificarNombre_Click(object sender, EventArgs e)
     {
@@ -176,31 +165,20 @@ Swal.fire({
 });
 ";
 
-        ScriptManager.RegisterStartupScript(
-            this.Page,
-            this.Page.GetType(),
-            "SwalModificarNombre",
-            script,
-            true
-        );
+        ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "SwalModificarNombre", script, true);
     }
-
 
     protected void btnConfirmarCambio_Click(object sender, EventArgs e)
     {
         string nuevoNombre = hfNuevoNombre.Value;
-
         if (string.IsNullOrWhiteSpace(nuevoNombre)) return;
 
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        gestorPermisos.ModificarNombrePermiso(ddlRolesGrupos.SelectedValue, nuevoNombre);
+        GP.ModificarNombrePermiso(ddlRolesGrupos.SelectedValue, nuevoNombre);
 
-        // refrescamos todo
         CargarRolesYGrupos();
         CargarArbolPermisos();
         CargarPermisosAsignados();
     }
-
 
     protected void btnCrearRol_Click(object sender, EventArgs e)
     {
@@ -214,7 +192,7 @@ Swal.fire({
 
     private void GeneracionDePermisoCompuesto(bool esRol)
     {
-        if (txtNuevoNombre.Text == "")
+        if (string.IsNullOrWhiteSpace(txtNuevoNombre.Text))
         {
             string script = @"
 Swal.fire({
@@ -224,18 +202,11 @@ Swal.fire({
     confirmButtonText: 'Aceptar'
 });";
 
-
-            ScriptManager.RegisterStartupScript(
-                this.Page,
-                this.Page.GetType(),
-                "SwalError",
-                script,
-                true
-            );
-            return;   
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "SwalError", script, true);
+            return;
         }
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        if (gestorPermisos.ExistePermiso(txtNuevoNombre.Text))
+
+        if (GP.ExistePermiso(txtNuevoNombre.Text))
         {
             string script = @"
 Swal.fire({
@@ -245,17 +216,11 @@ Swal.fire({
     confirmButtonText: 'Aceptar'
 });";
 
-
-            ScriptManager.RegisterStartupScript(
-                this.Page,
-                this.Page.GetType(),
-                "SwalError",
-                script,
-                true
-            );
-            return;   
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "SwalError", script, true);
+            return;
         }
-        if (!gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text), esRol))
+
+        if (!GP.AgregarPermisoCompuesto(txtNuevoNombre.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text), esRol))
         {
             string script = @"
 Swal.fire({
@@ -265,16 +230,10 @@ Swal.fire({
     confirmButtonText: 'Aceptar'
 });";
 
-
-            ScriptManager.RegisterStartupScript(
-                this.Page,
-                this.Page.GetType(),
-                "SwalError",
-                script,
-                true
-            );
+            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "SwalError", script, true);
             return;
         }
+
         txtNuevoNombre.Text = "";
         CargarRolesYGrupos();
         CargarArbolPermisos();
@@ -284,16 +243,17 @@ Swal.fire({
     public List<string> AgregarPermisosCheckeadosAPermisoSeleccionado(string nombrePermiso)
     {
         List<string> items = new List<string>();
-        foreach (ListItem item in chkListPermisos.Items) if (item.Selected) items.Add(item.Text.ToString());
+        foreach (ListItem item in chkListPermisos.Items)
+            if (item.Selected) items.Add(item.Text);
 
         return items;
     }
 
-
-    protected void btnGuardarCambios_Click(object sender, EventArgs e)
+    protected void btnGuardarCambios_Click(object sender,
+ EventArgs e)
     {
         GestorPermisos gestorPermisos = new GestorPermisos();
-        if(!gestorPermisos.ModificarPermisoCompuesto(ddlRolesGrupos.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text)))
+        if (!gestorPermisos.ModificarPermisoCompuesto(ddlRolesGrupos.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text)))
         {
             string script = @"
 Swal.fire({
