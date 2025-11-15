@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.ServiceModel.Channels;
 using System.Web;
 using System.Web.UI;
-using System.Collections.Generic;
-using ENTIDADES;
-using BLL;
 using System.Web.UI.WebControls;
+using BLL;
+using ENTIDADES;
 using SERVICIOS;
-using System.ServiceModel.Channels;
 
 
 public partial class MenuAdmin_Usuarios : Page
@@ -158,6 +159,22 @@ public partial class MenuAdmin_Usuarios : Page
         ServicioWeb sw = new ServicioWeb();
         sw.SerializarUsuario(usuarioSerializado);
     }
+    protected void btnDeserializar_Click(object sender, EventArgs e)
+    {        
+        ServicioWeb sw = new ServicioWeb();
+        Usuario usuario = sw.DeserializarUsuario(fuArchivo.FileName);
+        CargarUsuarioDeserializado(usuario);
+    }
+    private void CargarUsuarioDeserializado(Usuario usuario)
+    {
+        if (usuario != null)
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            usuarios.Add(usuario);
+            gvUsuarios.DataSource = usuarios;
+            gvUsuarios.DataBind();
+        }
+    }
     public void LimpiarTxt()
     {
         txtApellido.Text = "";
@@ -232,5 +249,6 @@ public partial class MenuAdmin_Usuarios : Page
         CancelarModificacion();
     }
 
-    
+
+
 }

@@ -41,5 +41,20 @@ public class ServicioWeb : System.Web.Services.WebService
             xml.Serialize(writer, pUsuario);
         }
     }
+    [WebMethod]
+    public Usuario DeserializarUsuario(string nombreArchivo)
+    {
+        string ruta = HttpContext.Current.Server.MapPath($"~/Archivos/{nombreArchivo}");
 
+        if (!File.Exists(ruta))
+            return null;
+
+        XmlSerializer xml = new XmlSerializer(typeof(Usuario));
+
+        using (StreamReader reader = new StreamReader(ruta))
+        {
+            Usuario u = (Usuario)xml.Deserialize(reader);
+            return u;
+        }
+    }
 }
