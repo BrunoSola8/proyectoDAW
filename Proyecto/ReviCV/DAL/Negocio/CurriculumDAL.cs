@@ -334,9 +334,6 @@ namespace DAL
             using (SqlCommand cmd = new SqlCommand(query, conn))
             {
                 cmd.Parameters.AddWithValue("@UsernameUsuario", nombreUsuario);
-
-                
-
                 using (SqlDataReader dr = cmd.ExecuteReader())
                 {
                     while (dr.Read())
