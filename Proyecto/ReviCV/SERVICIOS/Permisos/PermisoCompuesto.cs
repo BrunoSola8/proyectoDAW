@@ -21,7 +21,7 @@ namespace SERVICIOS.Permisos
 
         public override bool EsCompuesto() => true;
 
-        public bool EsRol;
+        public bool EsRol { get; }
 
         public IReadOnlyCollection<Permiso> PermisosIncluidos => permisos.AsReadOnly();
 
