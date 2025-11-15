@@ -302,6 +302,9 @@ h2, h3 {
                         <asp:DropDownList ID="ddlFiltroRol" runat="server" CssClass="campo-formulario" />
                         <asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" CssClass="boton boton-gris" OnClick="btnFiltrar_Click" />
                         <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="boton boton-gris" OnClick="btnLimpiar_Click" />
+                        <asp:Button ID="btnSerializar" runat="server" Text="Serializar" CssClass="boton boton-gris" OnClick="btnSerializar_Click" OnClientClick="return validarSeleccion();"/>
+                        <asp:Button ID="btnDeserializar" runat="server" Text="Deserializar" CssClass="boton boton-gris" OnClick="btnDeserializar_Click" />
+                        <asp:FileUpload ID="fuArchivo" runat="server" />
                     </div>
                 </div>
             </div>
@@ -383,6 +386,16 @@ h2, h3 {
                 return area.value;
             }
         });
+    </script>
+    <script>
+        function validarSeleccion() {
+            var txt = document.getElementById('<%= txtUsername.ClientID %>');
+            if (!txt.value.trim()) {
+                alert('Debe seleccionar un usuario!');
+                return false; // evita el postback
+            }
+            return true; // continúa al servidor
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Usuario xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <DNI>11111111</DNI>
+  <Nombre>Webmaster1</Nombre>
+  <Apellido>Webmaster1</Apellido>
+  <NombreUsuario>WB</NombreUsuario>
+  <Password>03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4</Password>
+  <Email>wb@gmail.com</Email>
+  <Rol>Webmaster</Rol>
+</Usuario>

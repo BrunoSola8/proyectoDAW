@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.ServiceModel.Channels;
 using System.Web;
 using System.Web.UI;
-using System.Collections.Generic;
-using ENTIDADES;
-using BLL;
 using System.Web.UI.WebControls;
+using BLL;
+using ENTIDADES;
 using SERVICIOS;
 
 
@@ -137,8 +139,6 @@ public partial class MenuAdmin_Usuarios : Page
             }            
         }
     }
-
-
     protected void btnEliminar_Click(object sender, EventArgs e)
     {
         if(txtDni.Text != "")
@@ -149,6 +149,30 @@ public partial class MenuAdmin_Usuarios : Page
             gestorBitacora.GuardarLogBitacora($"Se eliminó el usuario {txtDni.Text}", Session["username"].ToString());
             CargarUsuarios();
             LimpiarTxt();
+      
+        }
+    }
+    protected void btnSerializar_Click(object sender, EventArgs e)
+    {
+        GestorUsuario gestorUsuario = new GestorUsuario();
+        Usuario usuarioSerializado = gestorUsuario.ObtenerUsuario(txtUsername.Text);
+        ServicioWeb sw = new ServicioWeb();
+        sw.SerializarUsuario(usuarioSerializado);
+    }
+    protected void btnDeserializar_Click(object sender, EventArgs e)
+    {        
+        ServicioWeb sw = new ServicioWeb();
+        Usuario usuario = sw.DeserializarUsuario(fuArchivo.FileName);
+        CargarUsuarioDeserializado(usuario);
+    }
+    private void CargarUsuarioDeserializado(Usuario usuario)
+    {
+        if (usuario != null)
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            usuarios.Add(usuario);
+            gvUsuarios.DataSource = usuarios;
+            gvUsuarios.DataBind();
         }
     }
     public void LimpiarTxt()
@@ -224,4 +248,7 @@ public partial class MenuAdmin_Usuarios : Page
     {
         CancelarModificacion();
     }
+
+
+
 }
