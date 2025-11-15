@@ -10,13 +10,18 @@ namespace SERVICIOS.Permisos
     {
         private readonly List<Permiso> permisos = new List<Permiso>();
 
-        public PermisoCompuesto(string nombre) : base(nombre) { }
+        public PermisoCompuesto(string nombre, bool esRol) : base(nombre) 
+        {
+            EsRol = esRol;
+        }
 
         public override void AgregarPermiso(Permiso permiso) => permisos.Add(permiso);
 
         public override void RemoverPermiso(Permiso permiso) => permisos.Remove(permiso);
 
         public override bool EsCompuesto() => true;
+
+        public bool EsRol;
 
         public IReadOnlyCollection<Permiso> PermisosIncluidos => permisos.AsReadOnly();
 

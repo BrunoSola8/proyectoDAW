@@ -26,10 +26,17 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         List<Permiso> permisos = gestorPermisos.ObtenerPermisos("Compuesto");
         permisos.RemoveAll(x => x.nombre == "Administrador");
 
-        ddlRolesGrupos.DataSource = permisos;
+        ddlRolesGrupos.DataSource = permisos.Select(p =>
+            new {
+                nombre = ((p as PermisoCompuesto).EsRol ? "ROL: " : "GRUPO: ") + p.nombre,
+                valor = p.nombre
+            }
+        ).ToList();
+
         ddlRolesGrupos.DataTextField = "nombre";
-        ddlRolesGrupos.DataValueField = "nombre";
+        ddlRolesGrupos.DataValueField = "valor";
         ddlRolesGrupos.DataBind();
+
 
         ddlRolesGrupos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
     }
@@ -60,7 +67,7 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
         string rolSeleccionado = ddlRolesGrupos.SelectedValue;
         List<Permiso> RootsPermits = gestorPermisos.ObtenerPermisosEnArbol();
-        Permiso selected = RootsPermits.Find(x => x.nombre == ddlRolesGrupos.SelectedItem.ToString());
+        Permiso selected = RootsPermits.Find(x => x.nombre == ddlRolesGrupos.SelectedValue.ToString());
 
         if (selected is PermisoCompuesto compoundPermit)
         {
@@ -96,18 +103,19 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
     private void AgregarNodoRecursivo(Permiso permiso, TreeNodeCollection parentNodes)
     {
-        TreeNode nodo = new TreeNode(permiso.nombre);
+        string label = permiso is PermisoCompuesto c
+            ? (c.EsRol ? "ROL: " : "GRUPO: ") + permiso.nombre
+            : permiso.nombre;
+
+        TreeNode nodo = new TreeNode(label);
         parentNodes.Add(nodo);
 
-        // Si es un permiso compuesto, agregamos sus hijos
-        if (permiso is PermisoCompuesto compuesto)
-        {
-            foreach (var subPermiso in compuesto.PermisosIncluidos)
-            {
-                AgregarNodoRecursivo(subPermiso, nodo.ChildNodes);
-            }
-        }
+        if (permiso is PermisoCompuesto comp)
+            foreach (var sub in comp.PermisosIncluidos)
+                AgregarNodoRecursivo(sub, nodo.ChildNodes);
     }
+
+
 
 
 
@@ -119,12 +127,35 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
     protected void btnEliminar_Click(object sender, EventArgs e)
     {
+        string script = $@"
+Swal.fire({{
+    title: '¿Eliminar?',
+    text: 'Esta acción eliminará el rol/grupo y todos sus vínculos.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Eliminar',
+    cancelButtonText: 'Cancelar'
+}}).then((result) => {{
+    if (result.isConfirmed) {{
+        __doPostBack('{btnEliminarConfirmar.UniqueID}', '');
+    }}
+}});
+";
+
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "ConfirmEliminar", script, true);
+    }
+
+    protected void btnEliminarConfirmar_Click(object sender, EventArgs e)
+    {
         GestorPermisos gestorPermisos = new GestorPermisos();
         gestorPermisos.QuitarPermiso(ddlRolesGrupos.Text);
+
         CargarRolesYGrupos();
         CargarArbolPermisos();
         CargarPermisosAsignados();
     }
+
+
 
     protected void btnModificarNombre_Click(object sender, EventArgs e)
     {

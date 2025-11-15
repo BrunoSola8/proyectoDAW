@@ -31,7 +31,7 @@ namespace SERVICIOS.Permisos
             }
 
 
-            var nuevoPermiso = new PermisoCompuesto(nombre);
+            var nuevoPermiso = new PermisoCompuesto(nombre, esRol);
             dao.InsertarPermiso(nuevoPermiso, esRol);
 
             foreach (var permiso in permisos) dao.InsertarRelacion(nombre, permiso);

@@ -28,10 +28,12 @@ namespace SERVICIOS.Permisos
                     {
                         string nombre = reader["NombrePermiso"].ToString();
                         string tipo = reader["TipoPermiso"].ToString();
+                        bool rol = reader.GetBoolean(reader.GetOrdinal("EsRolPermiso"));
+
 
                         if (tipo == "Compuesto")
                         {
-                            var compuesto = new PermisoCompuesto(nombre);
+                            var compuesto = new PermisoCompuesto(nombre, rol);
                             permisosCompuestos.Add(compuesto);
                             permisos.Add(compuesto);
                         }
@@ -87,7 +89,7 @@ namespace SERVICIOS.Permisos
                 { TipoPermiso.TodosExceptoRol,  "EsRolPermiso = 0" }
             };
 
-            string query = "SELECT NombrePermiso, TipoPermiso FROM Permiso";
+            string query = "SELECT NombrePermiso, TipoPermiso, EsRolPermiso FROM Permiso";
 
             if (tipo != TipoPermiso.Todos)
                 query += $" WHERE {filtros[tipo]}";
@@ -105,11 +107,12 @@ namespace SERVICIOS.Permisos
                         {
                             string nombre = reader["NombrePermiso"].ToString();
                             string tipoBD = reader["TipoPermiso"].ToString();
+                            bool rol = reader.GetBoolean(reader.GetOrdinal("EsRolPermiso"));
 
                             if (tipoBD == "Simple")
                                 permisos.Add(new PermisoSimple(nombre));
                             else
-                                permisos.Add(new PermisoCompuesto(nombre));
+                                permisos.Add(new PermisoCompuesto(nombre, rol));
                         }
                     }
 

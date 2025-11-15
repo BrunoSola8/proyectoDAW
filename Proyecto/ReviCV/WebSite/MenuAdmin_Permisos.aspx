@@ -365,6 +365,10 @@
             </div>
             <asp:Button ID="btnConfirmarCambio" runat="server" OnClick="btnConfirmarCambio_Click" Style="display:none;" />
             <asp:HiddenField ID="hfNuevoNombre" runat="server" />
+            <asp:Button ID="btnEliminarConfirmar" runat="server" 
+            OnClick="btnEliminarConfirmar_Click" 
+            Style="display:none;" />
+
 
 
         </div>
