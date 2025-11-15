@@ -9,6 +9,12 @@ namespace SERVICIOS.Permisos
     public class GestorPermisos
     {
         private readonly PermisoDAO dao = new PermisoDAO();
+
+        public bool ExistePermiso(string nombre)
+        {
+            return dao.ExistePermiso(nombre);
+        }
+
         public bool AgregarPermisoCompuesto(string nombre, List<string> permisos, bool esRol)
         {
             if (dao.ExistePermiso(nombre)) return false;

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
     <title>PA - Gestión de Permisos</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         html, body {
             margin: 0;
@@ -350,7 +351,7 @@
 
                 <div class="seccion-inferior">
                     <div class="seccion-botones">
-                        <h3>Nuevo nombre</h3>
+                        <h3>Nuevo rol o grupo de permisos</h3>
                         <asp:TextBox ID="txtNuevoNombre" runat="server" CssClass="campo-texto" placeholder="Ingrese el nuevo nombre"></asp:TextBox>
                         <asp:Button ID="btnCrearRol" runat="server" Text="Crear Rol" CssClass="boton boton-verde boton-grande" OnClick="btnCrearRol_Click" />
                         <asp:Button ID="btnCrearGrupo" runat="server" Text="Crear Grupo de Permisos" CssClass="boton boton-verde boton-grande" OnClick="btnCrearGrupo_Click" />
@@ -358,12 +359,31 @@
 
                     <div class="seccion-botones">
                         <h3>Acciones</h3>
-                        <asp:Button ID="btnGuardarCambios" runat="server" Text="Guardar Cambios" CssClass="boton boton-azul boton-grande" Enabled="false" OnClick="btnGuardarCambios_Click" />
+                        <asp:Button ID="btnGuardarCambios" runat="server" Text="Guardar Cambios" CssClass="boton boton-azul boton-grande" Enabled="true" OnClick="btnGuardarCambios_Click" />
                     </div>
                 </div>
             </div>
+            <asp:Button ID="btnConfirmarCambio" runat="server" OnClick="btnConfirmarCambio_Click" Style="display:none;" />
+            <asp:HiddenField ID="hfNuevoNombre" runat="server" />
+
 
         </div>
     </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const ddl = document.getElementById("<%= ddlRolesGrupos.ClientID %>");
+            const btnEliminar = document.getElementById("<%= btnEliminar.ClientID %>");
+            const btnModificar = document.getElementById("<%= btnModificarNombre.ClientID %>");
+
+            ddl.addEventListener("change", function () {
+                const haySeleccion = ddl.value !== "";
+
+                btnEliminar.disabled = !haySeleccion;
+                btnModificar.disabled = !haySeleccion;
+            });
+
+        });
+</script>
 </body>
 </html>

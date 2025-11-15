@@ -23,13 +23,17 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
     private void CargarRolesYGrupos()
     {
         GestorPermisos gestorPermisos = new GestorPermisos();
-        ddlRolesGrupos.DataSource = gestorPermisos.ObtenerPermisos("Compuesto");
+        List<Permiso> permisos = gestorPermisos.ObtenerPermisos("Compuesto");
+        permisos.RemoveAll(x => x.nombre == "Administrador");
+
+        ddlRolesGrupos.DataSource = permisos;
         ddlRolesGrupos.DataTextField = "nombre";
         ddlRolesGrupos.DataValueField = "nombre";
         ddlRolesGrupos.DataBind();
 
         ddlRolesGrupos.Items.Insert(0, new ListItem("-- Seleccione --", ""));
     }
+
 
     protected void ddlRolesGrupos_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -41,11 +45,12 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
 
         CargarPermisosAsignados();
     }
+
     private void CargarPermisosAsignados()
     {
         chkListPermisos.Items.Clear();
         GestorPermisos gestorPermisos = new GestorPermisos();
-        var permisosSimples = gestorPermisos.ObtenerPermisos("Todo excepto rol");
+        var permisosSimples = gestorPermisos.ObtenerPermisos("Todos excepto rol");
 
         foreach (var permiso in permisosSimples)
         {
@@ -53,7 +58,6 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
             chkListPermisos.Items.Add(item);
         }
 
-        // Marcar los permisos que ya tiene el rol/grupo seleccionado
         string rolSeleccionado = ddlRolesGrupos.SelectedValue;
         List<Permiso> RootsPermits = gestorPermisos.ObtenerPermisosEnArbol();
         Permiso selected = RootsPermits.Find(x => x.nombre == ddlRolesGrupos.SelectedItem.ToString());
@@ -113,6 +117,178 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         btnGuardarCambios.Enabled = true;
     }
 
+    protected void btnEliminar_Click(object sender, EventArgs e)
+    {
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        gestorPermisos.QuitarPermiso(ddlRolesGrupos.Text);
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
+        CargarPermisosAsignados();
+    }
+
+    protected void btnModificarNombre_Click(object sender, EventArgs e)
+    {
+        string script = @"
+Swal.fire({
+    title: 'Modificar nombre',
+    input: 'text',
+    inputLabel: 'Nuevo nombre del permiso',
+    inputPlaceholder: 'Escriba el nuevo nombre',
+    showCancelButton: true,
+    confirmButtonText: 'Guardar',
+    cancelButtonText: 'Cancelar'
+}).then((result) => {
+    if (result.isConfirmed && result.value && result.value.trim() !== '') {
+        document.getElementById('" + hfNuevoNombre.ClientID + @"').value = result.value;
+        __doPostBack('" + btnConfirmarCambio.UniqueID + @"','');
+    }
+});
+";
+
+        ScriptManager.RegisterStartupScript(
+            this.Page,
+            this.Page.GetType(),
+            "SwalModificarNombre",
+            script,
+            true
+        );
+    }
+
+
+    protected void btnConfirmarCambio_Click(object sender, EventArgs e)
+    {
+        string nuevoNombre = hfNuevoNombre.Value;
+
+        if (string.IsNullOrWhiteSpace(nuevoNombre)) return;
+
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        gestorPermisos.ModificarNombrePermiso(ddlRolesGrupos.SelectedValue, nuevoNombre);
+
+        // refrescamos todo
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
+        CargarPermisosAsignados();
+    }
+
+
+    protected void btnCrearRol_Click(object sender, EventArgs e)
+    {
+        GeneracionDePermisoCompuesto(true);
+    }
+
+    protected void btnCrearGrupo_Click(object sender, EventArgs e)
+    {
+        GeneracionDePermisoCompuesto(false);
+    }
+
+    private void GeneracionDePermisoCompuesto(bool esRol)
+    {
+        if (txtNuevoNombre.Text == "")
+        {
+            string script = @"
+Swal.fire({
+    title: 'Error',
+    text: 'El nombre del permiso no puede estar vacío.',
+    icon: 'error',
+    confirmButtonText: 'Aceptar'
+});";
+
+
+            ScriptManager.RegisterStartupScript(
+                this.Page,
+                this.Page.GetType(),
+                "SwalError",
+                script,
+                true
+            );
+            return;   
+        }
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        if (gestorPermisos.ExistePermiso(txtNuevoNombre.Text))
+        {
+            string script = @"
+Swal.fire({
+    title: 'Error',
+    text: 'Ya existe un permiso con ese nombre.',
+    icon: 'error',
+    confirmButtonText: 'Aceptar'
+});";
+
+
+            ScriptManager.RegisterStartupScript(
+                this.Page,
+                this.Page.GetType(),
+                "SwalError",
+                script,
+                true
+            );
+            return;   
+        }
+        if (!gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text), esRol))
+        {
+            string script = @"
+Swal.fire({
+    title: 'Error',
+    text: 'Hubo un error al guardar el permiso.',
+    icon: 'error',
+    confirmButtonText: 'Aceptar'
+});";
+
+
+            ScriptManager.RegisterStartupScript(
+                this.Page,
+                this.Page.GetType(),
+                "SwalError",
+                script,
+                true
+            );
+            return;
+        }
+        txtNuevoNombre.Text = "";
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
+        CargarPermisosAsignados();
+    }
+
+    public List<string> AgregarPermisosCheckeadosAPermisoSeleccionado(string nombrePermiso)
+    {
+        List<string> items = new List<string>();
+        foreach (ListItem item in chkListPermisos.Items) if (item.Selected) items.Add(item.Text.ToString());
+
+        return items;
+    }
+
+
+    protected void btnGuardarCambios_Click(object sender, EventArgs e)
+    {
+        GestorPermisos gestorPermisos = new GestorPermisos();
+        if(!gestorPermisos.ModificarPermisoCompuesto(ddlRolesGrupos.Text, AgregarPermisosCheckeadosAPermisoSeleccionado(txtNuevoNombre.Text)))
+        {
+            string script = @"
+Swal.fire({
+    title: 'Error',
+    text: 'Hubo un error al modificar el permiso.',
+    icon: 'error',
+    confirmButtonText: 'Aceptar'
+});";
+
+
+            ScriptManager.RegisterStartupScript(
+                this.Page,
+                this.Page.GetType(),
+                "SwalError",
+                script,
+                true
+            );
+            return;
+        }
+        CargarRolesYGrupos();
+        CargarArbolPermisos();
+        CargarPermisosAsignados();
+    }
+
+    #region TOPBAR
+
     protected void btnInicio_Click(object sender, EventArgs e)
     {
         Response.Redirect("MenuAdmin.aspx");
@@ -146,35 +322,5 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         Response.Redirect("MenuAdmin_RubrosIdiomas.aspx");
     }
 
-    protected void btnEliminar_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void btnModificarNombre_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    protected void btnCrearRol_Click(object sender, EventArgs e)
-    {
-        GestorPermisos gestorPermisos = new GestorPermisos();
-        List<string> items = new List<string>();
-        foreach (ListItem item in chkListPermisos.Items) if (item.Selected) items.Add(item.Text.ToString());
-        gestorPermisos.AgregarPermisoCompuesto(txtNuevoNombre.Text, items, true);
-        CargarRolesYGrupos();
-        CargarArbolPermisos();
-    }
-
-    protected void btnCrearGrupo_Click(object sender, EventArgs e)
-    {
-        CargarRolesYGrupos();
-        CargarArbolPermisos();
-    }
-
-    protected void btnGuardarCambios_Click(object sender, EventArgs e)
-    {
-        CargarRolesYGrupos();
-        CargarArbolPermisos();
-    }
+    #endregion
 }
