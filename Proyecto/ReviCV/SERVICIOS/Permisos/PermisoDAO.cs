@@ -11,64 +11,68 @@ namespace SERVICIOS.Permisos
     public class PermisoDAO
     {
 
-        public List<Permiso> LeerPermisosEnArbol()
+        public List<PermisoCompuesto> LeerPermisosEnArbol()
         {
-            var permisos = new List<Permiso>();
-            var permisosCompuestos = new List<Permiso>();
+            var map = new Dictionary<string, Permiso>();
+            var compuestos = new Dictionary<string, PermisoCompuesto>();
 
             try
             {
-                string queryPermisos = "SELECT * FROM Permiso";
-
+                // 1) Leer permisos
                 using (var conn = Conexion.Instancia.ReturnConexion())
-                using (var cmd = new SqlCommand(queryPermisos, conn))
+                using (var cmd = new SqlCommand("SELECT * FROM Permiso", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         string nombre = reader["NombrePermiso"].ToString();
                         string tipo = reader["TipoPermiso"].ToString();
-                        bool rol = reader.GetBoolean(reader.GetOrdinal("EsRolPermiso"));
+                        bool esRol = reader.GetBoolean(reader.GetOrdinal("EsRolPermiso"));
 
+                        Permiso permiso;
 
                         if (tipo == "Compuesto")
                         {
-                            var compuesto = new PermisoCompuesto(nombre, rol);
-                            permisosCompuestos.Add(compuesto);
-                            permisos.Add(compuesto);
+                            var comp = new PermisoCompuesto(nombre, esRol);
+                            compuestos[nombre] = comp;
+                            permiso = comp;
                         }
                         else
                         {
-                            permisos.Add(new PermisoSimple(nombre));
+                            permiso = new PermisoSimple(nombre);
                         }
+
+                        map[nombre] = permiso;
                     }
                 }
 
-                string queryRelaciones = "SELECT * FROM PermisoRelacion";
-
+                // 2) Leer relaciones y armar el árbol
                 using (var conn = Conexion.Instancia.ReturnConexion())
-                using (var cmd = new SqlCommand(queryRelaciones, conn))
+                using (var cmd = new SqlCommand("SELECT * FROM PermisoRelacion", conn))
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        var a = reader["CompuestoNombre"].ToString();
-                        var b = reader["IncluidoNombre"].ToString();
-                        var compuesto = (PermisoCompuesto)permisosCompuestos.Find(x => x.getNombre() == reader["CompuestoNombre"].ToString());
+                        string padre = reader["CompuestoNombre"].ToString();
+                        string hijo = reader["IncluidoNombre"].ToString();
 
-                        var incluido = permisos.Find(x => x.getNombre() == reader["IncluidoNombre"].ToString());
+                        // SEGURO: existe en el diccionario
+                        var compuesto = (PermisoCompuesto)map[padre];
+                        var incluido = map[hijo];
 
                         compuesto.AgregarPermiso(incluido);
                     }
                 }
 
-                return permisosCompuestos;
+                return compuestos.Values.ToList();
             }
             catch
             {
-                return permisos;
+                // si falla, devolvés un árbol potencialmente incompleto, pero al menos consistente.
+                return compuestos.Values.ToList();
             }
         }
+
 
         public PermisoCompuesto LeerPermisoCompuesto(string nombreBuscado)
         {

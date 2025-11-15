@@ -65,7 +65,7 @@ public partial class MenuAdmin_Permisos : System.Web.UI.Page
         }
 
         string rolSeleccionado = ddlRolesGrupos.SelectedValue;
-        List<Permiso> RootsPermits = GP.ObtenerPermisosEnArbol();
+        List<PermisoCompuesto> RootsPermits = GP.ObtenerPermisosEnArbol();
         Permiso selected = RootsPermits.Find(x => x.nombre == rolSeleccionado);
 
         if (selected is PermisoCompuesto compoundPermit)
